@@ -47,7 +47,7 @@ export default async function BlogPost({params}: {params: Promise<{slug: string}
                 Diunggah pada: {new Date(data.artikel._createdAt).toLocaleDateString("id-ID")}
             </p>
 
-            <article className="prose lg:prose-xl">
+            <article className="prose prose-lg prose-orange mx-auto">
                 <StructuredText data={data.artikel.content} />
             </article>
         </main>

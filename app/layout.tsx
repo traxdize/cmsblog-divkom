@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import {Inter} from "next/font/google";
+import Link from "next/link";
+
+const inter = Inter({subsets:["latin"]});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,12 +26,37 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // return (
+  //   <html lang="en">
+  //     <body
+  //       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+  //     >
+  //       {children}
+  //     </body>
+  //   </html>
+  // );
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+    <html lang="id">
+      <body className={`${inter.className} bg-gray-50 flex flex-col min-h-screen text-gray-900`}>
+        <nav className="bg-white border-b border-gray-200 sticky top-0 z-10">
+          <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <Link href="/" className="text-2xl font-bold text-orange-600 tracking-tight hover:opacity-80 transition">
+              Blog<span className="text-gray-800">.Divkom HME ITB</span>
+            </Link>
+            <div className="text-sm font-medium text-gray-500 hover:text-orange-600 transition">
+              <Link href="/">Home</Link>
+            </div>
+          </div>
+        </nav>
+
+        <main className="flex-grow">
+          {children}
+        </main>
+
+        <footer className="bg-whie border-t border-gray-200 mt-12 py-8 text-center text-gray-500 text-sm">
+          <p>Apakah kita akan merevisi ini seperti modul Arsikom??</p>
+        </footer>
+
       </body>
     </html>
   );

@@ -2,7 +2,7 @@ import {request} from "@/lib/datocms";
 import { StructuredText} from "react-datocms";
 import {notFound} from "next/navigation";
 
-export const revalidate = 30;
+export const revalidate = 60;
 
 const QUERY = `query ArticleBySlug($slug: String){
     artikel(filter: {slug: {eq: $slug}}) {

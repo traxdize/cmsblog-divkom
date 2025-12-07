@@ -1,7 +1,7 @@
 import {request} from "@/lib/datocms";
 import Link from "next/link";
 
-export const revalidate = 30;
+export const revalidate = 60;
 
 const QUERY = `query {
   allArtikels{

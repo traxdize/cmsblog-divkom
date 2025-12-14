@@ -3,8 +3,10 @@ import Link from "next/link";
 
 export const revalidate = 60;
 
-const QUERY = `query {
-  allArtikels{
+// nyesel gw pake artikel frfr, tinggal ctrl+f replace sih
+const QUERY = 
+`query Home($limit: IntType, $skip: IntType) {
+  allArtikels(first: $limit, skip: $skip, orderBy: _createdAt_DESC){
       id
       title
       slug
@@ -16,16 +18,40 @@ const QUERY = `query {
         url
       }
     }
+    _allArtikelsMeta{
+      count
+    }
   }`;
 
-  export default async function Home({searchParams}: {searchParams: Promise<{search?: string}> }) {
-    const data: any = await request ({
+  export default async function Home({searchParams}: {searchParams: Promise<{[key: string]: string | string[] | undefined}> }) {
+
+    const params = await searchParams;
+
+    // uhh resolve search and pagination conflict
+    const rawSearch = params.search
+    const search = (typeof rawSearch === "string" ? rawSearch : "").toLowerCase();
+
+    // pagination logic
+    const page = typeof params.page === 'string' ? parseInt(params.page) : 1;
+
+    // pagination parameter
+    const limit = search ? 100 : 6; // limit dalam satu page
+    const skip = search ? 0 : (page-1)*limit; // hitung skip
+
+    const data: any = await request({
       query: QUERY,
+      variables: {limit: limit, skip: skip},
     });
 
-    const {search} = await searchParams;
     let articles = data.allArtikels;
 
+    // Pagination bar di bawah (logic)
+    const totalPosts = data._allArtikelsMeta.count;
+    const totalPages = Math.ceil(totalPosts/limit);
+    const hasNextPage = page < totalPages;
+    const hasPrevPage = page > 1;
+
+    // search logic
     if (search){
       const keyword = search.toLowerCase(); // ignore kapital
       articles = articles.filter((article: any) => {
@@ -91,7 +117,7 @@ return (
             <div className="p-6">
               {article.tags && (
                  <div className="mb-2 flex flex-wrap gap-1">
-                   {article.tags.split(',').slice(0, 2).map((t: string, i: number) => (
+                   {article.tags.split(',').slice(0, 3  ).map((t: string, i: number) => (
                      <span key={i} className="text-[10px] uppercase font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded">
                        {t.trim()}
                      </span>
@@ -110,6 +136,31 @@ return (
             </div>
           </Link>
         ))}
+      </div>
+
+      {/*pagination*/}
+      <div className="flex justify-center gap-4 mt-12">
+        {hasPrevPage && (
+          <Link
+            href={`/?page=${page-1}`}
+            className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+          >
+            ← Previous
+          </Link>
+        )}
+
+        <span className="px-4 py-2 text-gray-500">
+          Page {page} of {totalPages}
+        </span>
+
+        {hasNextPage && (
+          <Link
+            href={`/?page=${page+1}`}
+            className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+          >
+            Next →
+          </Link>
+        )}
       </div>
     </div>
   );

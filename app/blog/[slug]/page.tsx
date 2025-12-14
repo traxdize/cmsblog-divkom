@@ -136,7 +136,7 @@ export default async function BlogPost({params}: {params: Promise<{slug: string}
                                     </div>
                                 )}
                             </div>
-                            <h4 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-orange-600 transition-colors line-clamp-2">
+                            <h4 className="font-semibold text-gray-900 dark:text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-2">
                                 {post.title}
                             </h4>
                             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
